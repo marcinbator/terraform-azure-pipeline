@@ -18,8 +18,12 @@ variable "container_app_name" {
   default     = "pytest-app"
 }
 
-variable "app_port" {
+variable "backend_port" {
   type        = string
-  description = "Port on which the application runs"
   default     = "8080"
+}
+
+variable "text_content" {
+  type        = string
+  default     = "Hello, World!"
 }

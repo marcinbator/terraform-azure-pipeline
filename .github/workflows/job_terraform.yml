@@ -14,7 +14,8 @@ on:
         value: ${{ jobs.terraform.outputs.resource_group_name }}
 
 env:
-  TF_VAR_app_port: ${{ vars.BACKEND_PORT }}
+  TF_VAR_backend_port: ${{ vars.BACKEND_PORT }}
+  TF_VAR_text_content: ${{ vars.TEXT_CONTENT }}
 
 jobs:
   terraform:
