@@ -1,20 +1,5 @@
-resource "azurerm_log_analytics_workspace" "log_analytics" {
-  name                = "example-log-analytics"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  sku                 = "PerGB2018"
-  retention_in_days   = 30
-}
-
-resource "azurerm_container_app_environment" "container_env" {
-  name                       = "example-container-env"
-  location                   = azurerm_resource_group.rg.location
-  resource_group_name        = azurerm_resource_group.rg.name
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics.id
-}
-
-resource "azurerm_container_app" "app" {
-  name                         = var.container_app_name
+resource "azurerm_container_app" "backend" {
+  name                         = var.container_app_name + "_backend"
   container_app_environment_id = azurerm_container_app_environment.container_env.id
   resource_group_name          = azurerm_resource_group.rg.name
   revision_mode                = "Single"
@@ -32,7 +17,7 @@ resource "azurerm_container_app" "app" {
 
   template {
     container {
-      name   = "pytest-app"
+      name   = "pytest-backend"
       image  = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
       cpu    = 0.25
       memory = "0.5Gi"
@@ -44,6 +29,10 @@ resource "azurerm_container_app" "app" {
       env {
         name = "TEXT_CONTENT" 
         value = var.text_content
+      }
+      env {
+        name = "FRONTEND_URL"
+        value = var.frontend_url
       }
     }
 

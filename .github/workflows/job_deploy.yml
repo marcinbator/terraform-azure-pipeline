@@ -3,8 +3,13 @@ name: "Deploy to Azure"
 on:
   workflow_dispatch:
     inputs:
-      image_tag:
-        description: "Docker image tag"
+      frontend_image_tag:
+        description: "Docker frontend image tag"
+        required: true
+        type: string
+
+      backend_image_tag:
+        description: "Docker backend image tag"
         required: true
         type: string
       resource_group_name:
@@ -17,16 +22,25 @@ on:
         type: string
   workflow_call:
     inputs:
-      image_tag:
-        description: "Docker image tag"
+      frontend_image_tag:
+        description: "Docker frontend image tag"
+        required: true
+        type: string
+
+      backend_image_tag:
+        description: "Docker backend image tag"
         required: true
         type: string
       resource_group_name:
         description: "Resource group name"
         required: true
         type: string
-      container_app_name:
-        description: "Container app name"
+      container_frontend_name:
+        description: "Container frontend app name"
+        required: true
+        type: string
+      container_backend_name:
+        description: "Container backend app name"
         required: true
         type: string
 
@@ -53,17 +67,26 @@ jobs:
         with:
           creds: ${{ env.AZ_CREDENTIALS }}
 
-      - name: Deploy to Azure Container Apps
+      - name: Deploy frontend to Azure Container Apps
         uses: azure/container-apps-deploy-action@v1
         with:
-          imageToDeploy: ${{ inputs.image_tag }}
+          imageToDeploy: ${{ inputs.frontend_image_tag }}
           resourceGroup: ${{ inputs.resource_group_name }}
-          containerAppName: ${{ inputs.container_app_name }}
+          containerAppName: ${{ inputs.container_frontend_name }}
+          targetPort: ${{ vars.FRONTEND_PORT }}
+
+      - name: Deploy backend to Azure Container Apps
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          imageToDeploy: ${{ inputs.backend_image_tag }}
+          resourceGroup: ${{ inputs.resource_group_name }}
+          containerAppName: ${{ inputs.container_backend_name }}
           targetPort: ${{ vars.BACKEND_PORT }}
 
       - name: Get deployment URLs
         run: |
           echo "Container App deployed successfully!"
-          echo "Image: ${{ inputs.image_tag }}"
+          echo "Frontend Image: ${{ inputs.frontend_image_tag }}"
+          echo "Backend Image: ${{ inputs.backend_image_tag }}"
           echo "Resource Group: ${{ inputs.resource_group_name }}"
           echo "Container App: ${{ inputs.container_app_name }}"

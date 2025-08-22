@@ -14,9 +14,13 @@ on:
         required: true
         type: string
     outputs:
-      image_tag:
-        description: "Docker image tag"
-        value: ${{ jobs.build.outputs.image_tag }}
+      frontend_image_tag:
+        description: "Docker frontend image tag"
+        value: ${{ jobs.build.outputs.frontend_image_tag }}
+
+      backend_image_tag:
+        description: "Docker backend image tag"
+        value: ${{ jobs.build.outputs.backend_image_tag }}
 
 env:
   AZ_CREDENTIALS: >
@@ -33,7 +37,8 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      image_tag: ${{ steps.image_details.outputs.image_tag }}
+      frontend_image_tag: ${{ steps.image_details.outputs.frontend_image_tag }}
+      backend_image_tag: ${{ steps.image_details.outputs.backend_image_tag }}
 
     steps:
       - name: Checkout
@@ -51,11 +56,20 @@ jobs:
           username: ${{ secrets.AZURE_CLIENT_ID }}
           password: ${{ secrets.AZURE_CLIENT_SECRET }}
 
-      - name: Build and push container image to ACR
+      - name: Build and push frontend container image to ACR
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ inputs.acr_login_server }}/pytest:${{ github.sha }}
+          tags: ${{ inputs.acr_login_server }}/pytest_frontend:${{ github.sha }}
+          build-args: |
+
+          context: ./src/frontend
+
+      - name: Build and push backend container image to ACR
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ inputs.acr_login_server }}/pytest_backend:${{ github.sha }}
           build-args: |
 
           context: ./src/backend
@@ -63,4 +77,5 @@ jobs:
       - name: Set image tag output
         id: image_details
         run: |
-          echo "image_tag=${{ inputs.acr_login_server }}/pytest:${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "frontend_image_tag=${{ inputs.acr_login_server }}/pytest_frontend:${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "backend_image_tag=${{ inputs.acr_login_server }}/pytest_backend:${{ github.sha }}" >> $GITHUB_OUTPUT

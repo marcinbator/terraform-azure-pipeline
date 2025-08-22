@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frontend App</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      .title {
+        color: #333;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+      }
+      .message {
+        color: #666;
+        font-size: 1.2em;
+        margin-bottom: 30px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        border-left: 4px solid #007bff;
+      }
+      .refresh-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-right: 10px;
+      }
+      .refresh-btn:hover {
+        background-color: #0056b3;
+      }
+      .loading {
+        color: #666;
+        font-style: italic;
+      }
+      .error {
+        color: #dc3545;
+        background-color: #f8d7da;
+        border-color: #dc3545;
+      }
+      .config-info {
+        font-size: 0.9em;
+        color: #888;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f1f3f4;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="title" id="title">Ładowanie...</h1>
+      <div class="message" id="message">
+        <span class="loading">Pobieranie wiadomości z serwera...</span>
+      </div>
+      <button class="refresh-btn" onclick="fetchMessage()">
+        Odśwież wiadomość
+      </button>
+      <button class="refresh-btn" onclick="showConfig()">
+        Pokaż konfigurację
+      </button>
+      <div class="config-info" id="configInfo" style="display: none"></div>
+    </div>
+
+    <!-- Dynamiczna konfiguracja będzie załadowana przez skrypt -->
+    <script src="/config.js"></script>
+    <script>
+      // Pobierz URL backendu z konfiguracji
+      function getBackendUrl() {
+        return window.APP_CONFIG?.backendUrl || "http://localhost:8080";
+      }
+
+      async function fetchMessage() {
+        const titleElement = document.getElementById("title");
+        const messageElement = document.getElementById("message");
+
+        try {
+          // Resetuj styling na wypadek poprzedniego błędu
+          messageElement.className = "message";
+          messageElement.innerHTML =
+            '<span class="loading">Pobieranie wiadomości z serwera...</span>';
+
+          // Wywołaj API backendu używając skonfigurowanego URL
+          const apiUrl = getBackendUrl();
+          console.log("Łączenie z backendem:", apiUrl);
+
+          const response = await fetch(apiUrl);
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          // Wyświetl dane z backendu
+          titleElement.textContent = data.title || "Brak tytułu";
+          messageElement.textContent = data.text || "Brak wiadomości";
+        } catch (error) {
+          console.error("Błąd podczas pobierania danych:", error);
+          titleElement.textContent = "Błąd połączenia";
+          messageElement.className = "message error";
+          messageElement.textContent = `Nie udało się pobrać wiadomości z serwera. Błąd: ${error.message}`;
+        }
+      }
+
+      function showConfig() {
+        const configElement = document.getElementById("configInfo");
+        const backendUrl = getBackendUrl();
+
+        if (configElement.style.display === "none") {
+          configElement.innerHTML = `
+                    <strong>Konfiguracja aplikacji:</strong><br>
+                    Backend URL: <code>${backendUrl}</code><br>
+                    Timestamp: ${new Date().toLocaleString()}
+                `;
+          configElement.style.display = "block";
+        } else {
+          configElement.style.display = "none";
+        }
+      }
+
+      // Automatycznie pobierz wiadomość po załadowaniu strony
+      window.addEventListener("DOMContentLoaded", () => {
+        console.log("Frontend załadowany. Konfiguracja:", window.APP_CONFIG);
+        fetchMessage();
+      });
+    </script>
+  </body>
+</html>

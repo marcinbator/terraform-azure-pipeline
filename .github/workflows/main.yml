@@ -5,6 +5,7 @@ on:
     branches: ["main"]
     paths-ignore:
       - "**/*.md"
+      - "docker-compose.yml"
 
 jobs:
   terraform:

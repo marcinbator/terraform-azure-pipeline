@@ -23,7 +23,22 @@ variable "backend_port" {
   default     = "8080"
 }
 
+variable "frontend_port" {
+  type        = string
+  default     = "3000"
+}
+
 variable "text_content" {
   type        = string
   default     = "Hello, World!"
+}
+
+variable "backend_url" {
+  type        = string
+  default     = "http://localhost:8080"
+}
+
+variable "frontend_url" {
+  type        = string
+  default     = "http://localhost:3000"
 }
