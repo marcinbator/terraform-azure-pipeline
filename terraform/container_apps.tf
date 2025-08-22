@@ -1,4 +1,3 @@
-# Log Analytics Workspace for Container Apps
 resource "azurerm_log_analytics_workspace" "log_analytics" {
   name                = "example-log-analytics"
   location            = azurerm_resource_group.rg.location
@@ -7,7 +6,6 @@ resource "azurerm_log_analytics_workspace" "log_analytics" {
   retention_in_days   = 30
 }
 
-# Container Apps Environment
 resource "azurerm_container_app_environment" "container_env" {
   name                       = "example-container-env"
   location                   = azurerm_resource_group.rg.location
@@ -17,7 +15,6 @@ resource "azurerm_container_app_environment" "container_env" {
   depends_on = [azurerm_resource_provider_registration.container_apps]
 }
 
-# Container App
 resource "azurerm_container_app" "app" {
   name                         = var.container_app_name
   container_app_environment_id = azurerm_container_app_environment.container_env.id
