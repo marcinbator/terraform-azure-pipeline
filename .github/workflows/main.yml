@@ -26,7 +26,9 @@ jobs:
     needs: [terraform, build]
     uses: ./.github/workflows/job_deploy.yml
     with:
-      image_tag: ${{ needs.build.outputs.image_tag }}
+      frontend_image_tag: ${{ needs.build.outputs.frontend_image_tag }}
+      backend_image_tag: ${{ needs.build.outputs.backend_image_tag }}
       resource_group_name: ${{ needs.terraform.outputs.resource_group_name }}
-      container_app_name: ${{ needs.terraform.outputs.container_app_name }}
+      container_frontend_name: ${{ needs.terraform.outputs.container_frontend_name }}
+      container_backend_name: ${{ needs.terraform.outputs.container_backend_name }}
     secrets: inherit
