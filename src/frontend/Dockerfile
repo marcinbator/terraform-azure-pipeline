@@ -6,6 +6,4 @@ COPY configure.sh /docker-entrypoint.d/30-configure-frontend.sh
 
 RUN chmod +x /docker-entrypoint.d/30-configure-frontend.sh
 
-EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]
