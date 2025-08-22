@@ -56,7 +56,9 @@ jobs:
         with:
           push: true
           tags: ${{ inputs.acr_login_server }}/pytest:${{ github.sha }}
-          context: .
+          build-args: |
+            TEXT_CONTENT=${{ vars.TEXT_CONTENT }}
+          context: ./src/backend
 
       - name: Set image tag output
         id: image_details

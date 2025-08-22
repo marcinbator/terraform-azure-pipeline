@@ -1,11 +1,22 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import json
+import os
 
 class SimpleHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
-        self.send_header('Content-type', 'text/plain; charset=utf-8')
+        self.send_header('Content-type', 'application/json; charset=utf-8')
         self.end_headers()
-        self.wfile.write(b'Hello, world! (witam)')
+        
+        text_content = os.getenv('TEXT_CONTENT', 'Default message from server')
+        
+        response_data = {
+            "title": "hello world",
+            "text": text_content
+        }
+        
+        json_response = json.dumps(response_data, ensure_ascii=False)
+        self.wfile.write(json_response.encode('utf-8'))
 
 def run(server_class=HTTPServer, handler_class=SimpleHandler):
     server_address = ('', 8080)
