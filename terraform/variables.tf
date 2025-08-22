@@ -44,3 +44,8 @@ variable "ssh_port" {
   type        = number
   default     = 22
 }
+
+variable "container_app_name" {
+  type        = string
+  default     = "example-container-app"
+}

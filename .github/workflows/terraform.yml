@@ -95,3 +95,37 @@ jobs:
           push: true
           tags: ${{ steps.acr_details.outputs.acr_login_server }}/pytest:${{ github.sha }}
           context: .
+
+      - name: Get Container App details from Terraform output
+        id: container_app_details
+        working-directory: ./terraform
+        run: |
+          CONTAINER_APP_NAME=$(terraform output -raw container_app_name)
+          RESOURCE_GROUP_NAME=$(terraform output -raw resource_group_name)
+          echo "container_app_name=$CONTAINER_APP_NAME" >> $GITHUB_OUTPUT
+          echo "resource_group_name=$RESOURCE_GROUP_NAME" >> $GITHUB_OUTPUT
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Deploy to Azure Container Apps
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          imageToDeploy: ${{ steps.acr_details.outputs.acr_login_server }}/pytest:${{ github.sha }}
+          resourceGroup: ${{ steps.container_app_details.outputs.resource_group_name }}
+          containerAppName: ${{ steps.container_app_details.outputs.container_app_name }}
+
+      - name: Get deployment URLs
+        working-directory: ./terraform
+        run: |
+          CONTAINER_APP_URL=$(terraform output -raw container_app_url)
+          VM_URL=$(terraform output -raw web_server_url)
+          echo "🚀 Container App deployed at: $CONTAINER_APP_URL"
+          echo "🖥️ VM available at: $VM_URL"
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
