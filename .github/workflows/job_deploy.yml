@@ -85,8 +85,7 @@ jobs:
           containerAppName: ${{ inputs.container_backend_name }}
           targetPort: ${{ vars.BACKEND_PORT }}
           environmentVariables: |
-            TEXT_CONTENT='${{ vars.TEXT_CONTENT }}' 
-            FRONTEND_URL='${{ vars.FRONTEND_URL }}'
+            TEXT_CONTENT='${{ vars.TEXT_CONTENT }}' FRONTEND_URL='${{ vars.FRONTEND_URL }}'
 
       - name: Get deployment URLs
         run: |
