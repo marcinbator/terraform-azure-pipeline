@@ -23,7 +23,3 @@ provider "azurerm" {
 resource "azurerm_resource_provider_registration" "container_apps" {
   name = "Microsoft.App"
 }
-
-resource "azurerm_resource_provider_registration" "operational_insights" {
-  name = "Microsoft.OperationalInsights"
-}

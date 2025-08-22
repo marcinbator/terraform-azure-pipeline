@@ -116,6 +116,7 @@ jobs:
           imageToDeploy: ${{ steps.acr_details.outputs.acr_login_server }}/pytest:${{ github.sha }}
           resourceGroup: ${{ steps.container_app_details.outputs.resource_group_name }}
           containerAppName: ${{ steps.container_app_details.outputs.container_app_name }}
+          targetPort: 8080
 
       - name: Get deployment URLs
         working-directory: ./terraform

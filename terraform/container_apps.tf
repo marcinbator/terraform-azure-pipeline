@@ -5,8 +5,6 @@ resource "azurerm_log_analytics_workspace" "log_analytics" {
   resource_group_name = azurerm_resource_group.rg.name
   sku                 = "PerGB2018"
   retention_in_days   = 30
-
-  depends_on = [azurerm_resource_provider_registration.operational_insights]
 }
 
 # Container Apps Environment
@@ -27,25 +25,26 @@ resource "azurerm_container_app" "app" {
   revision_mode                = "Single"
 
   registry {
-    server   = azurerm_container_registry.acr.login_server
-    identity = azurerm_user_assigned_identity.container_identity.id
+    server               = azurerm_container_registry.acr.login_server
+    username             = azurerm_container_registry.acr.admin_username
+    password_secret_name = "registry-password"
   }
 
-  identity {
-    type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.container_identity.id]
+  secret {
+    name  = "registry-password"
+    value = azurerm_container_registry.acr.admin_password
   }
 
   template {
     container {
       name   = "pytest-app"
-      image  = "${azurerm_container_registry.acr.login_server}/pytest:latest"
+      image  = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
       cpu    = 0.25
       memory = "0.5Gi"
 
       env {
         name  = "PORT"
-        value = "8080"
+        value = "80"
       }
     }
 
@@ -56,7 +55,7 @@ resource "azurerm_container_app" "app" {
   ingress {
     allow_insecure_connections = false
     external_enabled           = true
-    target_port                = 8080
+    target_port                = 80
     transport                  = "http"
 
     traffic_weight {
@@ -64,18 +63,4 @@ resource "azurerm_container_app" "app" {
       percentage      = 100
     }
   }
-}
-
-# User Assigned Identity for Container App
-resource "azurerm_user_assigned_identity" "container_identity" {
-  name                = "container-identity"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-}
-
-# Role assignment for Container App to pull from ACR
-resource "azurerm_role_assignment" "acr_pull" {
-  scope                = azurerm_container_registry.acr.id
-  role_definition_name = "AcrPull"
-  principal_id         = azurerm_user_assigned_identity.container_identity.principal_id
 }
