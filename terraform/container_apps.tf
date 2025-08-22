@@ -5,6 +5,8 @@ resource "azurerm_log_analytics_workspace" "log_analytics" {
   resource_group_name = azurerm_resource_group.rg.name
   sku                 = "PerGB2018"
   retention_in_days   = 30
+
+  depends_on = [azurerm_resource_provider_registration.operational_insights]
 }
 
 # Container Apps Environment
@@ -13,6 +15,8 @@ resource "azurerm_container_app_environment" "container_env" {
   location                   = azurerm_resource_group.rg.location
   resource_group_name        = azurerm_resource_group.rg.name
   log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics.id
+
+  depends_on = [azurerm_resource_provider_registration.container_apps]
 }
 
 # Container App
