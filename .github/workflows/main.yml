@@ -9,13 +9,13 @@ on:
 jobs:
   terraform:
     name: "Provision infrastructure"
-    uses: ./.github/workflows/jobs/terraform.yml
+    uses: ./.github/workflows/job_terraform.yml
     secrets: inherit
 
   build:
     name: "Build and publish Docker image"
     needs: terraform
-    uses: ./.github/workflows/jobs/build.yml
+    uses: ./.github/workflows/job_build.yml
     with:
       acr_login_server: ${{ needs.terraform.outputs.acr_login_server }}
     secrets: inherit
@@ -23,7 +23,7 @@ jobs:
   deploy:
     name: "Deploy to Azure"
     needs: [terraform, build]
-    uses: ./.github/workflows/jobs/deploy.yml
+    uses: ./.github/workflows/job_deploy.yml
     with:
       image_tag: ${{ needs.build.outputs.image_tag }}
       resource_group_name: ${{ needs.terraform.outputs.resource_group_name }}
