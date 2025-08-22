@@ -31,6 +31,10 @@ variable "subnet_address_prefixes" {
   default     = ["10.0.1.0/24"]
 }
 
+variable "acr_name" {
+  type        = string
+}
+
 variable "http_port" {
   type        = number
   default     = 80
