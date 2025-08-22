@@ -96,4 +96,3 @@ jobs:
           echo "Frontend Image: ${{ inputs.frontend_image_tag }}"
           echo "Backend Image: ${{ inputs.backend_image_tag }}"
           echo "Resource Group: ${{ inputs.resource_group_name }}"
-          echo "App: ${{ inputs.app_name }}"
