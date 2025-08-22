@@ -6,10 +6,6 @@ resource "azurerm_linux_virtual_machine" "vm" {
   admin_username                  = var.admin_username
   admin_password                  = var.admin_password
   disable_password_authentication = false
-  
-  user_data = base64encode(templatefile("${path.module}/scripts/startup.sh", {
-    http_port = var.http_port
-  }))
 
   network_interface_ids = [
     azurerm_network_interface.nic.id,

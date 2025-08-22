@@ -17,3 +17,11 @@ output "resource_group_name" {
 output "virtual_machine_name" {
   value       = azurerm_linux_virtual_machine.vm.name
 }
+
+output "acr_name" {
+  value = azurerm_container_registry.acr.name
+}
+
+output "acr_login_server" {
+  value = azurerm_container_registry.acr.login_server
+}
