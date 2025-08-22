@@ -26,10 +26,6 @@ resource "azurerm_container_app" "frontend" {
         name  = "PORT"
         value = var.frontend_port
       }
-      env {
-        name  = "BACKEND_URL"
-        value = var.backend_url
-      }
     }
 
     min_replicas = 1
