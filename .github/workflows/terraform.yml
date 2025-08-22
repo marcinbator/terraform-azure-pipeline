@@ -34,12 +34,6 @@ jobs:
           ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
 
-      - name: Create terraform.tfvars
-        working-directory: ./terraform
-        run: |
-          cp example/terraform.tfvars.example terraform.tfvars
-          echo 'admin_password = "${{ secrets.TF_VAR_ADMIN_PASSWORD }}"' >> terraform.tfvars
-
       - name: Terraform Plan
         working-directory: ./terraform
         run: terraform plan -input=false
@@ -122,9 +116,7 @@ jobs:
         working-directory: ./terraform
         run: |
           CONTAINER_APP_URL=$(terraform output -raw container_app_url)
-          VM_URL=$(terraform output -raw web_server_url)
-          echo "🚀 Container App deployed at: $CONTAINER_APP_URL"
-          echo "🖥️ VM available at: $VM_URL"
+          echo "Container App deployed at: $CONTAINER_APP_URL"
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}

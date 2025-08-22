@@ -1,5 +1,6 @@
 variable "resource_group_name" {
   type        = string
+  default = "pytest_resources"
 }
 
 variable "location" {
@@ -9,9 +10,10 @@ variable "location" {
 
 variable "acr_name" {
   type        = string
+  default = "pytestregistry"
 }
 
 variable "container_app_name" {
   type        = string
-  default     = "example-container-app"
+  default     = "pytest-app"
 }

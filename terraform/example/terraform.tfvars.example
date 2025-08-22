@@ -1,12 +1,4 @@
 resource_group_name = "pytest_resources"
 acr_name = "pytestregistry"
 location           = "West Europe"
-vm_size           = "Standard_D2s_v5"
-admin_username    = "batorm"
-# admin_password = ""
-
-vnet_address_space       = ["10.0.0.0/16"]
-subnet_address_prefixes  = ["10.0.1.0/24"]
-
-http_port = 8080
-ssh_port  = 22
+container_app_name = "pytest-app"
