@@ -74,7 +74,7 @@ jobs:
           resourceGroup: ${{ inputs.resource_group_name }}
           containerAppName: ${{ inputs.container_frontend_name }}
           targetPort: ${{ vars.FRONTEND_PORT }}
-          environmentVariables: BACKEND_URL=${{ vars.BACKEND_URL }}
+          environmentVariables: "BACKEND_URL=${{ vars.BACKEND_URL }}"
 
       - name: Deploy backend to Azure Container Apps
         uses: azure/container-apps-deploy-action@v1
@@ -83,7 +83,7 @@ jobs:
           resourceGroup: ${{ inputs.resource_group_name }}
           containerAppName: ${{ inputs.container_backend_name }}
           targetPort: ${{ vars.BACKEND_PORT }}
-          environmentVariables: TEXT_CONTENT=${{ vars.TEXT_CONTENT }} FRONTEND_URL=${{ vars.FRONTEND_URL }}
+          environmentVariables: "TEXT_CONTENT=${{ vars.TEXT_CONTENT }} FRONTEND_URL=${{ vars.FRONTEND_URL }}"
 
       - name: Get deployment URLs
         run: |
