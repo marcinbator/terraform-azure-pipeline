@@ -13,6 +13,9 @@ on:
       resource_group_name:
         value: ${{ jobs.terraform.outputs.resource_group_name }}
 
+env:
+  TF_VAR_app_port: ${{ vars.BACKEND_PORT }}
+
 jobs:
   terraform:
     name: "Provision infrastructure"

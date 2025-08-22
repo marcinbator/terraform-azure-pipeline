@@ -59,7 +59,7 @@ jobs:
           imageToDeploy: ${{ inputs.image_tag }}
           resourceGroup: ${{ inputs.resource_group_name }}
           containerAppName: ${{ inputs.container_app_name }}
-          targetPort: 8080
+          targetPort: ${{ vars.BACKEND_PORT }}
 
       - name: Get deployment URLs
         run: |

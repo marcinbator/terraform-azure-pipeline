@@ -39,7 +39,7 @@ resource "azurerm_container_app" "app" {
 
       env {
         name  = "PORT"
-        value = "80"
+        value = var.app_port
       }
     }
 
@@ -50,7 +50,7 @@ resource "azurerm_container_app" "app" {
   ingress {
     allow_insecure_connections = false
     external_enabled           = true
-    target_port                = 8080
+    target_port                = var.app_port
     transport                  = "http"
 
     traffic_weight {
