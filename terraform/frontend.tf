@@ -1,5 +1,5 @@
 resource "azurerm_container_app" "frontend" {
-  name                         = var.container_app_name + "_frontend"
+  name                         = "${var.container_app_name}frontend"
   container_app_environment_id = azurerm_container_app_environment.container_env.id
   resource_group_name          = azurerm_resource_group.rg.name
   revision_mode                = "Single"
