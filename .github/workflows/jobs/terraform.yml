@@ -1,0 +1,66 @@
+name: "Terraform Infrastructure"
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    outputs:
+      acr_name:
+        value: ${{ jobs.terraform.outputs.acr_name }}
+      acr_login_server:
+        value: ${{ jobs.terraform.outputs.acr_login_server }}
+      container_app_name:
+        value: ${{ jobs.terraform.outputs.container_app_name }}
+      resource_group_name:
+        value: ${{ jobs.terraform.outputs.resource_group_name }}
+
+jobs:
+  terraform:
+    name: "Provision infrastructure"
+    runs-on: ubuntu-latest
+
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+    outputs:
+      acr_name: ${{ steps.details.outputs.acr_name }}
+      acr_login_server: ${{ steps.details.outputs.acr_login_server }}
+      container_app_name: ${{ steps.details.outputs.container_app_name }}
+      resource_group_name: ${{ steps.details.outputs.resource_group_name }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.0"
+
+      - name: TF Init
+        working-directory: ./terraform
+        run: terraform init
+
+      - name: TF Plan
+        working-directory: ./terraform
+        run: terraform plan -input=false
+
+      - name: TF Apply
+        working-directory: ./terraform
+        run: terraform apply -auto-approve -input=false
+
+      - name: Get output
+        id: details
+        working-directory: ./terraform
+        run: |
+          ACR_NAME=$(terraform output -raw acr_name)
+          ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server)
+          CONTAINER_APP_NAME=$(terraform output -raw container_app_name)
+          RESOURCE_GROUP_NAME=$(terraform output -raw resource_group_name)
+
+          echo "acr_name=$ACR_NAME" >> $GITHUB_OUTPUT
+          echo "acr_login_server=$ACR_LOGIN_SERVER" >> $GITHUB_OUTPUT
+          echo "container_app_name=$CONTAINER_APP_NAME" >> $GITHUB_OUTPUT
+          echo "resource_group_name=$RESOURCE_GROUP_NAME" >> $GITHUB_OUTPUT
