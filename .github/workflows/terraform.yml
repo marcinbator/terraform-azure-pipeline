@@ -57,3 +57,46 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Get ACR details from Terraform output
+        id: acr_details
+        working-directory: ./terraform
+        run: |
+          ACR_NAME=$(terraform output -raw acr_name)
+          ACR_LOGIN_SERVER=$(terraform output -raw acr_login_server)
+          echo "acr_name=$ACR_NAME" >> $GITHUB_OUTPUT
+          echo "acr_login_server=$ACR_LOGIN_SERVER" >> $GITHUB_OUTPUT
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: |
+            {
+              "clientId": "${{ secrets.AZURE_CLIENT_ID }}",
+              "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}",
+              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
+              "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
+            }
+
+      - name: Log in to Azure Container Registry
+        run: |
+          az acr login --name ${{ steps.acr_details.outputs.acr_name }}
+
+      - name: Build and push Docker image
+        run: |
+          IMAGE_TAG="${{ steps.acr_details.outputs.acr_login_server }}/app:${{ github.sha }}"
+          IMAGE_TAG_LATEST="${{ steps.acr_details.outputs.acr_login_server }}/app:latest"
+          
+          docker build -t $IMAGE_TAG .
+          docker tag $IMAGE_TAG $IMAGE_TAG_LATEST
+          
+          docker push $IMAGE_TAG
+          docker push $IMAGE_TAG_LATEST
+          
+          echo "Pushed image: $IMAGE_TAG"
+          echo "Pushed image: $IMAGE_TAG_LATEST"
