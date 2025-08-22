@@ -16,8 +16,12 @@ on:
         description: "Resource group name"
         required: true
         type: string
-      container_app_name:
-        description: "Container app name"
+      container_frontend_name:
+        description: "Container frontend app name"
+        required: true
+        type: string
+      container_backend_name:
+        description: "Container backend app name"
         required: true
         type: string
   workflow_call:
@@ -56,6 +60,7 @@ env:
 jobs:
   deploy:
     name: "Deploy to Azure"
+    environment: "production"
     runs-on: ubuntu-latest
 
     steps:
@@ -74,8 +79,7 @@ jobs:
           resourceGroup: ${{ inputs.resource_group_name }}
           containerAppName: ${{ inputs.container_frontend_name }}
           targetPort: ${{ vars.FRONTEND_PORT }}
-          environmentVariables: |
-            BACKEND_URL='${{ vars.BACKEND_URL }}'
+          environmentVariables: "BACKEND_URL='${{ vars.BACKEND_URL }}'"
 
       - name: Deploy backend to Azure Container Apps
         uses: azure/container-apps-deploy-action@v1
@@ -84,8 +88,7 @@ jobs:
           resourceGroup: ${{ inputs.resource_group_name }}
           containerAppName: ${{ inputs.container_backend_name }}
           targetPort: ${{ vars.BACKEND_PORT }}
-          environmentVariables: |
-            TEXT_CONTENT='${{ vars.TEXT_CONTENT }}' FRONTEND_URL='${{ vars.FRONTEND_URL }}'
+          environmentVariables: "TEXT_CONTENT='${{ vars.TEXT_CONTENT }}' FRONTEND_URL='${{ vars.FRONTEND_URL }}'"
 
       - name: Get deployment URLs
         run: |
@@ -93,4 +96,4 @@ jobs:
           echo "Frontend Image: ${{ inputs.frontend_image_tag }}"
           echo "Backend Image: ${{ inputs.backend_image_tag }}"
           echo "Resource Group: ${{ inputs.resource_group_name }}"
-          echo "Container App: ${{ inputs.container_app_name }}"
+          echo "App: ${{ inputs.app_name }}"

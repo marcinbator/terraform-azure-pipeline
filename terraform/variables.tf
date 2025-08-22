@@ -3,17 +3,12 @@ variable "resource_group_name" {
   default = "pytest_resources"
 }
 
-variable "location" {
-  type        = string
-  default     = "West Europe"
-}
-
 variable "acr_name" {
   type        = string
   default = "pytestregistry"
 }
 
-variable "container_app_name" {
+variable "app_name" {
   type        = string
   default     = "pytest-app"
 }

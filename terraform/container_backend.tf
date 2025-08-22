@@ -1,5 +1,5 @@
-resource "azurerm_container_app" "frontend" {
-  name                         = "${var.container_app_name}frontend"
+resource "azurerm_container_app" "backend" {
+  name                         = "${var.app_name}backend"
   container_app_environment_id = azurerm_container_app_environment.container_env.id
   resource_group_name          = azurerm_resource_group.rg.name
   revision_mode                = "Single"
@@ -17,14 +17,14 @@ resource "azurerm_container_app" "frontend" {
 
   template {
     container {
-      name   = "pytest-frontend"
+      name   = "pytest-backend"
       image  = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
       cpu    = 0.25
       memory = "0.5Gi"
 
       env {
         name  = "PORT"
-        value = var.frontend_port
+        value = var.backend_port
       }
     }
 
@@ -35,7 +35,7 @@ resource "azurerm_container_app" "frontend" {
   ingress {
     allow_insecure_connections = false
     external_enabled           = true
-    target_port                = var.frontend_port
+    target_port                = var.backend_port
     transport                  = "http"
 
     traffic_weight {

@@ -22,6 +22,7 @@ env:
 jobs:
   terraform:
     name: "Provision infrastructure"
+    environment: "production"
     runs-on: ubuntu-latest
 
     env:
