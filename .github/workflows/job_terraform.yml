@@ -31,7 +31,7 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       TF_VAR_frontend_image_tag: ${{ inputs.frontend_image_tag }}
       TF_VAR_backend_image_tag: ${{ inputs.backend_image_tag }}
-      TF_VAR_acr_server: ${{ vars.ACR_LOGIN_SERVER }}
+      TF_VAR_acr_server: ${{ secrets.ACR_LOGIN_SERVER }}
       TF_VAR_acr_username: ${{ secrets.AZURE_CLIENT_ID }}
       TF_VAR_acr_password: ${{ secrets.AZURE_CLIENT_SECRET }}
 
