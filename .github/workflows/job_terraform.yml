@@ -1,5 +1,3 @@
-name: "Terraform Infrastructure"
-
 on:
   workflow_dispatch:
   workflow_call:
@@ -20,7 +18,7 @@ env:
 
 jobs:
   terraform:
-    name: "Provision infrastructure"
+    name: "Provision infrastructure and deploy"
     environment: "production"
     runs-on: ubuntu-latest
 

@@ -1,4 +1,4 @@
-name: "Main Pipeline"
+name: "Deploy pipeline"
 
 on:
   push:
@@ -9,12 +9,10 @@ on:
 
 jobs:
   build:
-    name: "Build and publish Docker image"
     uses: ./.github/workflows/job_build.yml
     secrets: inherit
 
   terraform:
-    name: "Provision infrastructure"
     uses: ./.github/workflows/job_terraform.yml
     needs: build
     with:
