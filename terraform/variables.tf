@@ -10,9 +10,11 @@ variable "container_env_name" {
   type        = string
   default     = "pytest-container-env"
 }
-variable "acr_name" {
-  type        = string
-  default = "pytestregistry"
+variable "frontend_image_tag" {
+  type = string
+}
+variable "backend_image_tag" {
+  type = string
 }
 variable "app_name" {
   type        = string

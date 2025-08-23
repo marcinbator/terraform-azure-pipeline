@@ -2,17 +2,7 @@ name: "Build and Publish Docker Image"
 
 on:
   workflow_dispatch:
-    inputs:
-      acr_login_server:
-        description: "ACR login server"
-        required: true
-        type: string
   workflow_call:
-    inputs:
-      acr_login_server:
-        description: "ACR login server"
-        required: true
-        type: string
     outputs:
       frontend_image_tag:
         description: "Docker frontend image tag"
@@ -53,7 +43,7 @@ jobs:
       - name: Login to ACR
         uses: docker/login-action@v3
         with:
-          registry: ${{ inputs.acr_login_server }}
+          registry: ${{ vars.ACR_LOGIN_SERVER }}
           username: ${{ secrets.AZURE_CLIENT_ID }}
           password: ${{ secrets.AZURE_CLIENT_SECRET }}
 
@@ -61,7 +51,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ inputs.acr_login_server }}/pytest_frontend:${{ github.sha }}
+          tags: ${{ vars.ACR_LOGIN_SERVER }}/pytest_frontend:${{ github.sha }}
           build-args: |
 
           context: ./src/frontend
@@ -70,7 +60,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ inputs.acr_login_server }}/pytest_backend:${{ github.sha }}
+          tags: ${{ vars.ACR_LOGIN_SERVER }}/pytest_backend:${{ github.sha }}
           build-args: |
 
           context: ./src/backend
@@ -78,5 +68,5 @@ jobs:
       - name: Set image tag output
         id: image_details
         run: |
-          echo "frontend_image_tag=${{ inputs.acr_login_server }}/pytest_frontend:${{ github.sha }}" >> $GITHUB_OUTPUT
-          echo "backend_image_tag=${{ inputs.acr_login_server }}/pytest_backend:${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "frontend_image_tag=${{ vars.ACR_LOGIN_SERVER }}/pytest_frontend:${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "backend_image_tag=${{ vars.ACR_LOGIN_SERVER }}/pytest_backend:${{ github.sha }}" >> $GITHUB_OUTPUT

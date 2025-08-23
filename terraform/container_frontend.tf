@@ -18,7 +18,7 @@ resource "azurerm_container_app" "frontend" {
   template {
     container {
       name   = "pytest-frontend"
-      image  = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+      image  = var.frontend_image_tag
       cpu    = 0.25
       memory = "0.5Gi"
 
