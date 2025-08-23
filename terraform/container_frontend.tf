@@ -26,6 +26,10 @@ resource "azurerm_container_app" "frontend" {
         name  = "PORT"
         value = var.frontend_port
       }
+      env {
+        name  = "BACKEND_URL"
+        value = var.backend_url
+      }
     }
 
     min_replicas = 1
@@ -33,7 +37,6 @@ resource "azurerm_container_app" "frontend" {
   }
 
   ingress {
-    allow_insecure_connections = false
     external_enabled           = true
     target_port                = var.frontend_port
     transport                  = "http"

@@ -20,6 +20,7 @@ env:
   TF_VAR_frontend_port: ${{ vars.FRONTEND_PORT }}
   TF_VAR_text_content: ${{ vars.TEXT_CONTENT }}
   TF_VAR_frontend_url: ${{ vars.FRONTEND_URL }}
+  TF_VAR_backend_url: ${{ vars.BACKEND_URL }}
 
 jobs:
   terraform:

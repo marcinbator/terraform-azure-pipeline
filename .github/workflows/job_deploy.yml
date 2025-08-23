@@ -72,15 +72,14 @@ jobs:
         with:
           creds: ${{ env.AZ_CREDENTIALS }}
 
-      - name: Deploy frontend to Azure Container Apps
-        uses: azure/container-apps-deploy-action@v1
-        with:
-          imageToDeploy: ${{ inputs.frontend_image_tag }}
-          resourceGroup: ${{ inputs.resource_group_name }}
-          containerAppName: ${{ inputs.container_frontend_name }}
-          targetPort: ${{ vars.FRONTEND_PORT }}
+      - name: Update frontend image
+        run: |
+          az containerapp update \
+            --name ${{ inputs.container_frontend_name }} \
+            --resource-group ${{ inputs.resource_group_name }} \
+            --image ${{ inputs.frontend_image_tag }}
 
-      - name: Update backend image only
+      - name: Update backend image
         run: |
           az containerapp update \
             --name ${{ inputs.container_backend_name }} \

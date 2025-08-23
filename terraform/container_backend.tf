@@ -41,7 +41,6 @@ resource "azurerm_container_app" "backend" {
   }
 
   ingress {
-    allow_insecure_connections = false
     external_enabled           = true
     target_port                = var.backend_port
     transport                  = "http"
