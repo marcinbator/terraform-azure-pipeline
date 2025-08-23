@@ -41,7 +41,7 @@ jobs:
       - name: Login to ACR
         uses: docker/login-action@v3
         with:
-          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          registry: ${{ vars.ACR_LOGIN_SERVER }}
           username: ${{ secrets.AZURE_CLIENT_ID }}
           password: ${{ secrets.AZURE_CLIENT_SECRET }}
 
@@ -49,18 +49,18 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ secrets.ACR_LOGIN_SERVER }}/pytest_frontend:${{ github.sha }}
+          tags: ${{ vars.ACR_LOGIN_SERVER }}/pytest_frontend:${{ github.sha }}
           context: ./src/frontend
 
       - name: Build and push backend container image to ACR
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ secrets.ACR_LOGIN_SERVER }}/pytest_backend:${{ github.sha }}
+          tags: ${{ vars.ACR_LOGIN_SERVER }}/pytest_backend:${{ github.sha }}
           context: ./src/backend
 
       - name: Set image tag output
         id: image_details
         run: |
-          echo "frontend_image_tag=${{ secrets.ACR_LOGIN_SERVER }}/pytest_frontend:${{ github.sha }}" >> $GITHUB_OUTPUT
-          echo "backend_image_tag=${{ secrets.ACR_LOGIN_SERVER }}/pytest_backend:${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "frontend_image_tag=${{ vars.ACR_LOGIN_SERVER }}/pytest_frontend:${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "backend_image_tag=${{ vars.ACR_LOGIN_SERVER }}/pytest_backend:${{ github.sha }}" >> $GITHUB_OUTPUT
