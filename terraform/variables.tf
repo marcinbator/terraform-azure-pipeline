@@ -22,3 +22,13 @@ variable "frontend_port" {
   type        = string
   default     = "3000"
 }
+
+variable "text_content" {
+  type        = string
+  default     = "default!"
+}
+
+variable "frontend_url" {
+  type        = string
+  default     = "http://localhost"
+}
