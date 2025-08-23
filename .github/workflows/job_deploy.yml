@@ -79,16 +79,13 @@ jobs:
           resourceGroup: ${{ inputs.resource_group_name }}
           containerAppName: ${{ inputs.container_frontend_name }}
           targetPort: ${{ vars.FRONTEND_PORT }}
-          # environmentVariables: "BACKEND_URL='${{ vars.BACKEND_URL }}'"
 
-      - name: Deploy backend to Azure Container Apps
-        uses: azure/container-apps-deploy-action@v1
-        with:
-          imageToDeploy: ${{ inputs.backend_image_tag }}
-          resourceGroup: ${{ inputs.resource_group_name }}
-          containerAppName: ${{ inputs.container_backend_name }}
-          targetPort: ${{ vars.BACKEND_PORT }}
-          # environmentVariables: "TEXT_CONTENT='${{ vars.TEXT_CONTENT }}' FRONTEND_URL='${{ vars.FRONTEND_URL }}'"
+      - name: Update backend image only
+        run: |
+          az containerapp update \
+            --name ${{ inputs.container_backend_name }} \
+            --resource-group ${{ inputs.resource_group_name }} \
+            --image ${{ inputs.backend_image_tag }}
 
       - name: Get deployment URLs
         run: |
