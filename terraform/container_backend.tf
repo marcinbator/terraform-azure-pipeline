@@ -5,14 +5,14 @@ resource "azurerm_container_app" "backend" {
   revision_mode                = "Single"
 
   registry {
-    server               = azurerm_container_registry.acr.login_server
-    username             = azurerm_container_registry.acr.admin_username
+    server               = var.acr_server
+    username             = var.acr_username
     password_secret_name = "registry-password"
   }
 
   secret {
     name  = "registry-password"
-    value = azurerm_container_registry.acr.admin_password
+    value = var.acr_password
   }
 
   template {

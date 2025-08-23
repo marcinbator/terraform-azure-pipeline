@@ -2,6 +2,18 @@ variable "resource_group_name" {
   type        = string
   default = "pytest_resources"
 }
+variable "acr_server" {
+  type        = string
+  default     = "commonacrregistry.azurecr.io"
+}
+variable "acr_username" {
+  type        = string
+  default     = "commonacradmin"
+}
+variable "acr_password" {
+  type        = string
+  default     = "commonacrpassword"
+}
 variable "container_log_name" {
   type        = string
   default     = "pytest-log-analytics"
