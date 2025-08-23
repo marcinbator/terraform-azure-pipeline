@@ -24,9 +24,11 @@ variable "container_env_name" {
 }
 variable "frontend_image_tag" {
   type = string
+  default = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
 }
 variable "backend_image_tag" {
   type = string
+  default = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
 }
 variable "app_name" {
   type        = string
