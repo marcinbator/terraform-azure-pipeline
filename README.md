@@ -1,4 +1,4 @@
-# terraform-azure-tester
+# terraform-azure-test
 
 Automated Terraform-Azure-GithubAction CI/CD configuration for simple Docker container with Python HTTP server
 
